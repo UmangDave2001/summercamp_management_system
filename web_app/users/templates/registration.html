@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Registration Form</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 40px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f8f8f8;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 30px;
+    }
+
+    .form-group label {
+      font-weight: bold;
+    }
+
+    .form-control {
+      border-radius: 3px;
+    }
+
+    .btn-primary {
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Registration</h1>
+
+    {% for u in member %}
+      {{ member }}
+    {% endfor %}
+
+    <form method="post" action="{% url 'registration' %}">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="surname">Surname:</label>
+        <input type="text" class="form-control" id="surname" name="surname" required>
+      </div>
+
+      <div class="form-group">
+        <label for="address">Address:</label>
+        <input type="text" class="form-control" id="address" name="address" required>
+      </div>
+
+      <div class="form-group">
+        <label for="age">Age:</label>
+        <input type="number" class="form-control" id="age" name="age" required>
+      </div>
+
+      <div class="form-group">
+        <label for="phone_number">Phone Number:</label>
+        <input type="tel" class="form-control" id="phone_number" name="phone_number" required>
+      </div>
+
+      <div class="form-group">
+        <label for="date_of_birth">Date of Birth:</label>
+        <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" required>
+      </div>
+
+      <div class="form-group">
+        <label for="school_name">School Name:</label>
+        <input type="text" class="form-control" id="school_name" name="school_name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="parents_occupation">Parents' Occupation:</label>
+        <input type="text" class="form-control" id="parents_occupation" name="parents_occupation" required>
+      </div>
+
+
+      <div class="form-group">
+        <label for="courses_fees_time">Courses, Fees, and Time:</label>
+        <div class="input-group" id="dropdownContainer">
+          <select class="form-control" name="courses">
+            <option selected>Select courses</option>
+            {% for course in courses %}
+              <option value="{{ course.course_list }}">{{ course.course_list }}</option>
+            {% endfor %}
+          </select>
+
+          <select class="form-control" name="fees">
+            <option selected>Select Fees</option>
+            {% for fee in courses %}
+              <option value="{{ fee.course_fee }}">{{ fee.course_fee }}</option>
+            {% endfor %}
+          </select>
+
+          <select class="form-control" name="time">
+            <option selected>Select time</option>
+            {% for time in courses %}
+              <option value="{{ time.course_time }}">{{ time.course_time }}</option>
+            {% endfor %}
+          </select>
+
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" id="addDropdown">Add</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="Date">Date :</label>
+        <input type="date" class="form-control" id="Date" name="Date" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Submit</button>  
+    </form>
+  </div>
+
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script>
+    // JavaScript code to show a pop-up after registration
+
+    // Wait for the page to load
+    document.addEventListener("DOMContentLoaded", function() {
+      // Check if the registration messages exist
+      var messagesExist = {% if messages %} true {% else %} false {% endif %};
+
+      // If messages exist, show a pop-up
+      if (messagesExist) {
+        // Replace the following code with your preferred pop-up method
+        // For example, you can use a Bootstrap modal or an alert box
+        alert("Registration successful Done!. Your Registration id is {{id}}");
+      }
+
+      // Add event listener to the "Add" button
+      var addDropdownBtn = document.getElementById("addDropdown");
+      addDropdownBtn.addEventListener("click", function() {
+        // Add new grid dropdown fields
+        // if(count > 20) {}
+        var dropdownContainer = document.getElementById("dropdownContainer");
+        var newDropdown = document.createElement("div");
+        newDropdown.classList.add("input-group", "mt-3");
+
+        var coursesSelect = document.createElement("select");
+        coursesSelect.classList.add("form-control");
+        coursesSelect.setAttribute("name", "courses");
+        coursesSelect.innerHTML = '<option selected>Select courses</option>';
+        {% for course in courses %}
+          coursesSelect.innerHTML += '<option value="{{ course.course_list }}">{{ course.course_list }}</option>';
+        {% endfor %}
+
+        var feesSelect = document.createElement("select");
+        feesSelect.classList.add("form-control");
+        feesSelect.setAttribute("name", "fees");
+        feesSelect.innerHTML = '<option selected>Select Fees</option>';
+        {% for fee in courses %}
+          feesSelect.innerHTML += '<option value="{{ fee.course_fee }}">{{ fee.course_fee }}</option>';
+        {% endfor %}
+
+        var timeSelect = document.createElement("select");
+        timeSelect.classList.add("form-control");
+        timeSelect.setAttribute("name", "time");
+        timeSelect.innerHTML = '<option selected>Select time</option>';
+        {% for time in courses %}
+          timeSelect.innerHTML += '<option value="{{ time.course_time }}">{{ time.course_time }}</option>';
+        {% endfor %}
+
+        var removeBtn = document.createElement("button");
+        removeBtn.classList.add("btn", "btn-outline-secondary");
+        removeBtn.type = "button";
+        removeBtn.innerText = "Remove";
+        removeBtn.onclick = function() {
+          newDropdown.remove();
+        };
+
+        dropdownContainer.appendChild(newDropdown);
+        newDropdown.appendChild(coursesSelect);
+        newDropdown.appendChild(feesSelect);
+        newDropdown.appendChild(timeSelect);
+        newDropdown.appendChild(removeBtn);
+      });
+    });
+  </script>
+</body>
+</html>
